@@ -1,3 +1,4 @@
+import { AuthService } from './../auth/auth.service';
 import {
   BadRequestException,
   Injectable,
@@ -20,6 +21,7 @@ export class FoundationService {
     @InjectRepository(Foundation)
     private readonly foundationRepository: Repository<Foundation>,
     private readonly memberService: MemberService,
+    private readonly authService: AuthService,
   ) {}
 
   async create(createFoundationDto: CreateFoundationDto) {
@@ -30,6 +32,11 @@ export class FoundationService {
       });
 
       await this.foundationRepository.save(foundation);
+      this.authService.setClaims(createFoundationDto.adminEmail, {
+        foundationId: foundation.id,
+        rol: 'admin',
+      });
+
       return foundation;
     } catch (error) {
       this.logger.error(error.code);
@@ -93,6 +100,12 @@ export class FoundationService {
         ...updateFoundationDto,
       });
 
+      if (updateFoundationDto.adminEmail !== foundation.adminEmail) {
+        this.authService.setClaims(updateFoundationDto.adminEmail, {
+          foundationId: foundation.id,
+          rol: 'admin',
+        });
+      }
       console.log(updatedFoundation);
       await this.foundationRepository.save(updatedFoundation);
       return updatedFoundation;

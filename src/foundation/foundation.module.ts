@@ -4,9 +4,10 @@ import { FoundationController } from './foundation.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Foundation } from './entities/foundation.entity';
 import { MemberModule } from 'src/member/member.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Foundation]), MemberModule],
+  imports: [TypeOrmModule.forFeature([Foundation]), MemberModule, AuthModule],
   controllers: [FoundationController],
   providers: [FoundationService],
 })
