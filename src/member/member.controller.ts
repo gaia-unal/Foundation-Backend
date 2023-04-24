@@ -36,6 +36,11 @@ export class MemberController {
     return this.memberService.searchMembersByCategory(category, param, key);
   }
 
+  @Get('birthday')
+  findMembersByBirthday(@Query('month') month: string) {
+    return this.memberService.searchByBirthDate(month);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.memberService.findOne(id);

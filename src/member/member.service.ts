@@ -132,6 +132,43 @@ export class MemberService {
     return membersWithLevels;
   }
 
+  async searchByBirthDate(month: string) {
+    const querybuilder = this.memberRepository.createQueryBuilder('member');
+
+    const members = await querybuilder
+      .leftJoinAndSelect(`member.level`, 'level')
+      .where(`EXTRACT(MONTH FROM member.birthDate) = :month`, {
+        month,
+      })
+      // .where(`member.birthDate BETWEEN :startDate AND :endDate`, {
+      //   startDate,
+      //   endDate,
+      // })
+      .getMany();
+
+    if (!members)
+      throw new BadRequestException(
+        `No members found with birthdate in month ${month}`,
+      );
+
+    const membersWithLevels = members.map((member) => {
+      const level = member.level.filter((lev) => lev.active === true);
+      return {
+        id: member.id,
+        name: member.name,
+        lastName: member.lastName,
+        address: member.address,
+        birthDate: member.birthDate,
+        email: member.email,
+        phone: member.phone,
+        identification: member.identification,
+        level: level[0].level,
+      };
+    });
+
+    return membersWithLevels;
+  }
+
   async update(id: string, updateMemberDto: UpdateMemberDto) {
     const member = await this.findOne(id);
 
