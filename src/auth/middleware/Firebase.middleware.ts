@@ -17,7 +17,7 @@ export class FirebaseMiddleware implements NestMiddleware {
           .get('FIREBASE_PRIVATE_KEY')
           .replace(/\\n/g, '\n'),
       }),
-    });
+    }, 'foundation');
   }
 
   use(req: Request, res: Response, next: NextFunction) {
