@@ -2,15 +2,16 @@ version: '3'
 
 services:
   backend:
-    container_name: FoundationBackend
+    container_name: ${COMPOSE_PROJECT_NAME}_backend
     build:
       context: .
       dockerfile: Dockerfile
     expose:
-      - '3000'
+      - 3000
     networks:
       - gaia
   db:
+    container_name: ${COMPOSE_PROJECT_NAME}_db
     image: postgres:14.3
     restart: always
     ports:
@@ -18,7 +19,6 @@ services:
     environment:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
-    container_name: FoundationDB
     volumes:
       - ./postgres:/var/lib/postgresql/data
     networks:
